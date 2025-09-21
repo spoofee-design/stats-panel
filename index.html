@@ -1,97 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My HTML5 Game</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Stats Panel</title>
 <style>
-    body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        font-family: Arial, sans-serif;
-        background-color: #111;
-        color: #fff;
-        padding: 2rem;
-    }
-
-    #download-count {
-        font-size: 24px;
-        font-weight: bold;
-        color: #FF2449;
-        text-align: center;
-        margin: 1rem 0;
-        padding: 0.75rem 1.5rem;
-        border: 2px solid #FF2449;
-        border-radius: 15px;
-        background-color: rgba(255,36,73,0.1);
-        box-shadow: 0 4px 15px rgba(255,36,73,0.3);
-        transition: all 0.3s ease;
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    #download-count:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255,36,73,0.4);
-    }
-
-    .stats-container {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        margin: 1rem 0;
-    }
-
-    #refresh-btn {
-        background-color: #FF2449;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: all 0.3s ease;
-    }
-
-    #refresh-btn:hover {
-        background-color: #e01e3a;
-        transform: scale(1.05);
-    }
-
-    #refresh-btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    #game-canvas {
-        width: 800px;
-        height: 600px;
-        background-color: #222;
-        border: 3px solid #fff;
-        border-radius: 15px;
-        margin-top: 2rem;
-    }
+  :root { --bg: rgba(17,17,17,0.95); --chip-bg: rgba(255,255,255,0.04); --muted:#bfbfbf; --accent:#fff; font-family:Inter,Arial,sans-serif; color:var(--accent); }
+  body { margin:0; padding:12px; background:transparent; -webkit-font-smoothing:antialiased; }
+  .wrap { display:flex; gap:12px; align-items:center; justify-content:center; }
+  .chip {
+    background:var(--chip-bg);
+    padding:10px 16px;
+    border-radius:999px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    min-width:120px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.4);
+  }
+  .icon { font-size:18px; }
+  .num { font-weight:700; font-size:18px; }
+  .label { font-size:11px; color:var(--muted); margin-top:2px; }
+  .col { display:flex; flex-direction:column; }
 </style>
 </head>
 <body>
+  <div class="wrap" id="wrap">
+    <div class="chip"><div class="icon">⬇️</div><div class="col"><div class="num" id="downloads">0</div><div class="label">Downloads</div></div></div>
+    <div class="chip"><div class="icon">⏱️</div><div class="col"><div class="num" id="minutes">0</div><div class="label">Minutes Played</div></div></div>
+  </div>
 
-<h1>My HTML5 Game</h1>
-
-<!-- Download Counter and Controls -->
-<div class="stats-container">
-    <div id="download-count">Loading downloads...</div>
-    <button id="refresh-btn" onclick="refreshDownloads()">🔄 Refresh</button>
-</div>
-
-<!-- Game Canvas -->
-<canvas id="game-canvas"></canvas>
-
-<!-- Script to handle game logic -->
-<script src="game.js"></script>
-
+<script>
+  // read ?downloads=12345&minutes=678
+  function getQuery() {
+    const q = {};
+    location.search.substring(1).split('&').forEach(pair => {
+      if(!pair) return;
+      const [k,v] = pair.split('=').map(decodeURIComponent);
+      q[k]=v;
+    });
+    return q;
+  }
+  function fmt(n){ return Number(n).toLocaleString(); }
+  const q = getQuery();
+  if(q.downloads) document.getElementById('downloads').innerText = fmt(q.downloads);
+  if(q.minutes) document.getElementById('minutes').innerText = fmt(q.minutes);
+</script>
 </body>
 </html>
